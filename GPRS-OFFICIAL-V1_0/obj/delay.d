@@ -1,0 +1,17 @@
+.\obj\delay.o: source\delay.c
+.\obj\delay.o: source\delay.h
+.\obj\delay.o: C:\Keil\ARM\ARMCC\bin\..\include\stdint.h
+.\obj\delay.o: source\system.h
+.\obj\delay.o: source\read_para.h
+.\obj\delay.o: C:\Keil\ARM\ARMCC\bin\..\include\stdbool.h
+.\obj\delay.o: C:\Keil\ARM\ARMCC\bin\..\include\stdio.h
+.\obj\delay.o: C:\Keil\ARM\ARMCC\bin\..\include\stdlib.h
+.\obj\delay.o: C:\Keil\ARM\ARMCC\bin\..\include\string.h
+.\obj\delay.o: source\stringconvert.h
+.\obj\delay.o: source\system.h
+.\obj\delay.o: source\timer.h
+.\obj\delay.o: C:\Keil\ARM\Inc\Philips\LPC213x.H
+.\obj\delay.o: source\uart0.h
+.\obj\delay.o: source\target.h
+.\obj\delay.o: source\LPC213x_isr.h
+.\obj\delay.o: source\wdt.h

@@ -1,0 +1,15 @@
+.\obj\variable.o: source\variable.c
+.\obj\variable.o: C:\Keil\ARM\ARMCC\bin\..\include\stdbool.h
+.\obj\variable.o: C:\Keil\ARM\ARMCC\bin\..\include\stdint.h
+.\obj\variable.o: C:\Keil\ARM\ARMCC\bin\..\include\stdio.h
+.\obj\variable.o: source\read_para.h
+.\obj\variable.o: C:\Keil\ARM\ARMCC\bin\..\include\stdlib.h
+.\obj\variable.o: C:\Keil\ARM\ARMCC\bin\..\include\string.h
+.\obj\variable.o: source\stringconvert.h
+.\obj\variable.o: source\system.h
+.\obj\variable.o: source\read_para.h
+.\obj\variable.o: source\timer.h
+.\obj\variable.o: C:\Keil\ARM\Inc\Philips\LPC213x.H
+.\obj\variable.o: source\uart0.h
+.\obj\variable.o: source\target.h
+.\obj\variable.o: source\LPC213x_isr.h

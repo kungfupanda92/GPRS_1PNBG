@@ -1,0 +1,16 @@
+.\obj\rtc.o: source\rtc.c
+.\obj\rtc.o: source\rtc.h
+.\obj\rtc.o: C:\Keil\ARM\Inc\Philips\LPC213x.H
+.\obj\rtc.o: source\system.h
+.\obj\rtc.o: C:\Keil\ARM\ARMCC\bin\..\include\stdint.h
+.\obj\rtc.o: source\read_para.h
+.\obj\rtc.o: C:\Keil\ARM\ARMCC\bin\..\include\stdbool.h
+.\obj\rtc.o: C:\Keil\ARM\ARMCC\bin\..\include\stdio.h
+.\obj\rtc.o: C:\Keil\ARM\ARMCC\bin\..\include\stdlib.h
+.\obj\rtc.o: C:\Keil\ARM\ARMCC\bin\..\include\string.h
+.\obj\rtc.o: source\stringconvert.h
+.\obj\rtc.o: source\system.h
+.\obj\rtc.o: source\timer.h
+.\obj\rtc.o: source\uart0.h
+.\obj\rtc.o: source\target.h
+.\obj\rtc.o: source\LPC213x_isr.h

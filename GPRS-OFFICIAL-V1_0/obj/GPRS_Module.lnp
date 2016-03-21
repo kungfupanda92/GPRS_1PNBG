@@ -1,0 +1,23 @@
+--cpu ARM7TDMI
+".\obj\gprs_com.o"
+".\obj\lpc213x_isr.o"
+".\obj\main.o"
+".\obj\read_para.o"
+".\obj\save_flash.o"
+".\obj\stringconvert.o"
+".\obj\variable.o"
+".\obj\delay.o"
+".\obj\gpio.o"
+".\obj\iap.o"
+".\obj\init_system.o"
+".\obj\retarget.o"
+".\obj\rtc.o"
+".\obj\timer.o"
+".\obj\uart0.o"
+".\obj\uart1.o"
+".\obj\wdt.o"
+".\obj\startup.o"
+--strict --scatter ".\obj\GPRS_Module.sct"
+--summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\lst\GPRS_Module.map" -o .\obj\GPRS_Module.axf
