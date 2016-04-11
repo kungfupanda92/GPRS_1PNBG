@@ -4,7 +4,7 @@ extern _system_flag system_flag;
 extern _program_counter program_counter;
 extern _uart1_rx_frame uart1_rx;
 extern _uart_frame uart1_frame;
-extern _uart_frame buffer_rx,buffer_tx;
+extern _uart_frame buffer_rx, buffer_tx;
 extern char buf_send_server[MAX_BUFFER_TX];
 extern PARA_PLC para_plc;
 extern CONFIG_NEWWORK config_network;
@@ -224,9 +224,9 @@ void quick_connect(void) {
 	char ip_server[15];
 //-----------------------
 	//if (system_flag.bits.IP_CONNECT == 0)
-		strcpy(ip_server, config_network._IP1);	//connect to IP1
+	strcpy(ip_server, config_network._IP1);	//connect to IP1
 	//else
-		//strcpy(ip_server, config_network._IP2);	//connect to IP2
+	//strcpy(ip_server, config_network._IP2);	//connect to IP2
 //-----------------------
 	for (i = 0; i < 2; i++) {
 		prepare_command_gprs(UART_WAIT_RESPONDE, LF);
@@ -294,7 +294,7 @@ void prepare_trans_data_test(void) {
 }
 //-------------------------------------------------------------------------------------------------
 void prepare_trans_data(uint16_t len_frame) {
-	unsigned int length;
+
 	unsigned char counter, k;
 
 //	length = strlen(buf_send_server);
@@ -325,9 +325,8 @@ void prepare_trans_data(uint16_t len_frame) {
 //---Process: transmit frame data (buf_send_server) to SERVER--------------------------------------
 //---buf_send_server: contain data by STRING, before transmit, convert to HEX data-----------------
 void trans_data_server(uint16_t len_frame) {
-	unsigned int length, i, j;
-	unsigned char byte_send;
-	unsigned char a, b;
+	unsigned int i;
+
 	unsigned char counter, k;
 
 	prepare_trans_data(len_frame);
@@ -353,7 +352,7 @@ void trans_data_server(uint16_t len_frame) {
 		delay_n50ms(1);
 		prepare_command_gprs(UART_WAIT_RESPONDE, LF);
 		for (i = 0; i < len_frame; i++) {
-				UART1_send_HEX(buffer_tx.data_frame[i]);
+			UART1_send_HEX(buffer_tx.data_frame[i]);
 		}
 		UART1_send_HEX(0x1A);	//command to send data
 
@@ -436,7 +435,7 @@ void trans_data_server(uint16_t len_frame) {
 //}
 
 void trans_data_server_test(void) {
-		unsigned int length, i, j;
+	unsigned int length, i, j;
 	unsigned char byte_send;
 	unsigned char a, b;
 	unsigned char counter, k;
@@ -540,7 +539,6 @@ void send_command_to_server(unsigned char command) {
 	strcat(buf_send_server, _check_sum);
 	strcat(buf_send_server, "16");
 
-
 	trans_data_server_test();
 
 }
@@ -548,11 +546,12 @@ void send_command_to_server(unsigned char command) {
 void get_command_from_server(char *data_process) {
 	char *ptr_data;
 	uint8_t uTemp;
+
 	ptr_data = data_process;
-	
+
 	printf("ZO DAY");
-	uTemp=check_data_rx_server(ptr_data);
-	printf("return %u",uTemp);
+	uTemp = check_data_rx_server(ptr_data);
+	printf("return %u", uTemp);
 //	//-------ptr_data is pointing the frame data (68xxxx16)--------------------------
 //	if (check_data_rx_server(ptr_data) != ok_frame)
 //		return;		//frame error
@@ -575,7 +574,7 @@ flag_system check_data_rx_server(char *data_server) {
 	//------check start_frame---------
 	if (buffer_rx.frame.start_code != 0x68)
 		return error_start_code;
-	printf("qua 1");
+	log("start code ok");
 	/*-------Check overflow frame----------------------------------------------------*/
 
 	/*-------Check byte check_count----------------------------------------------------*/
@@ -583,20 +582,23 @@ flag_system check_data_rx_server(char *data_server) {
 	/*-------Check re_start code-------------------------------------------------------*/
 	if (buffer_rx.frame.restart_code != 0x68)
 		return error_restart_code;
-	printf("qua 2");
+	log("restart code ok");
 	/*-------Check ID DCU-------------------------------------------------------*/
 	StringToHex(hexstring, para_plc._ID);
-	for (i = 0; i < 6; i++) {
-		if (buffer_rx.frame.id_meter[i] != hexstring[5 - i])
+	swap_byte(&hexstring[4], &hexstring[5]);
+	for (i = 0; i < 4; i++) {
+		if (buffer_rx.frame.id_array[i] != hexstring[i + 2])
 			return error_id_dcu;
 	}
-	printf("qua 3");
+	log("check id meter ok");
 
 	/*------------------------------------------------------------------------------*/
 	/*-------Get Length of data & check----------------------------------------------*/
 	length_data.byte.byte0 = buffer_rx.frame.length_data[0]; // byte LSB
 	length_data.byte.byte1 = buffer_rx.frame.length_data[1]; // byte MSB
-	printf("len=%4X",length_data.val);
+
+	hLog("len", length_data.val);
+
 	if (length_data.val > (NUMBER_COMMAND_MAX * 2 + 33))
 		return commands_overload;
 	/*-------check byte end_frame----------------------------------------------*/
@@ -611,7 +613,7 @@ flag_system check_data_rx_server(char *data_server) {
 //	if (temp_byte != convert_string2hex(ptr + i))
 //		return error_check_sum;
 	/*----------------FRAME OK - NO ERROR----------------------------------------------*/
-	printf("qua 4");
+	log("check ok");
 	return ok_frame;
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -624,7 +626,7 @@ void process_data_rx_from_server(char *data_server, unsigned char control_code) 
 //--------------
 	switch (control_code) {
 	case COMMAND_READ_PARA_DIRECT: //Control_code = 0x11
-		i = process_server_reading_direct(ptr,&len_buff);
+		i = process_server_reading_direct(ptr, &len_buff);
 		if (i == process_data_ok) {
 			trans_data_server(len_buff);
 		} else if (i == error_frame)
@@ -642,7 +644,7 @@ void process_data_rx_from_server(char *data_server, unsigned char control_code) 
 		system_flag.bits.SOCKET_OK = 1;
 		break;
 	case COMMAND_LOAD_CURVE:
-		i = process_server_write_mode(ptr,&len_buff);
+		i = process_server_write_mode(ptr, &len_buff);
 		if (i == process_data_ok) {
 			trans_data_server(len_buff);
 		} else if (i == error_frame)
@@ -654,12 +656,12 @@ void process_data_rx_from_server(char *data_server, unsigned char control_code) 
 		//delay_nsecond(2);
 		break;
 	case COMMAND_READ_DATA_SAVED:
-		process_server_reading_data_save(ptr,&len_buff);
+		process_server_reading_data_save(ptr, &len_buff);
 		//answer_server();
 		trans_data_server(len_buff);
 		break;
 	case COMMAND_SYN_TIME_MODULE:
-		i = process_server_syntime_module(ptr,&len_buff);
+		i = process_server_syntime_module(ptr, &len_buff);
 		if (i)
 			//answer_server();
 			trans_data_server(len_buff);
@@ -667,7 +669,7 @@ void process_data_rx_from_server(char *data_server, unsigned char control_code) 
 			uart1_rx.para_rx.unread++;
 		break;
 	case COMMAND_READ_TIME_MODULE:
-		process_server_readtime_module(ptr,&len_buff);
+		process_server_readtime_module(ptr, &len_buff);
 		//answer_server();
 		trans_data_server(len_buff);
 		break;

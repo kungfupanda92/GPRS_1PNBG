@@ -7,5 +7,5 @@
 //*******************************************************************************
 void delay_n50ms (unsigned int n);
 void delay_nsecond (unsigned char nsencond);
-
+void delay_ns(unsigned int ns);
 #endif	/*  */

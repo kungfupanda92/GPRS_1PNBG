@@ -532,7 +532,7 @@ long Compare(long tmp_adr_dst, long tmp_adr_src, long tmp_size)
 unsigned int Get_Sec_Num(unsigned long addr)
 {
 //----- sectors numbers identical for LPC213x
-	if((addr >=0x00000000) && (addr <= 0x00000FFF))
+	if((addr >0x00000000) && (addr <= 0x00000FFF))
 	{	return 0; 	}
 	if((addr >=0x00001000) && (addr <= 0x00001FFF))
 	{	return 1; 	}

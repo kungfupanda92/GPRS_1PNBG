@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "main.h"
 #include "init_system.h"
 #include "gpio.h"
 #include "uart0.h"

@@ -1,5 +1,4 @@
 #include "main.h"
-//hello baby
 
 //*****-----*****-----*****-----*****-----
 extern _rtc_flag rtc_flag;
@@ -24,6 +23,18 @@ int main(void) {
 	initUart0(1200); 	//Initialize Uart0
 	initUart1(9600);	//Initialize Uart1
 	//--------------------------------
+#ifdef EXTERNAL_EEPROM
+	/*config external eeprom*/
+	IODIR0 |= (1 << 7);
+	IODIR1 |= (1 << 24) | (1 << 25);
+	IOSET1 |= (1 << 24) | (1 << 25);
+	//IOCLR0 |= (1 << 7);
+	m25lc512_ON();
+	spiInit();
+#endif
+	
+//	//test_fram();
+//	while(1);
 	//init_Watchdog();	//Init & Start WDT - TimeOut ~= 310 Second
 	//--------------------------------
 	var_start();

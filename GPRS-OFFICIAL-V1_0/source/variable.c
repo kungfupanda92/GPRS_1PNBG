@@ -7,9 +7,9 @@
 
 char idle_buf_position, idle_buf_counter;
 _uart1_rx_frame uart1_rx;
-_uart_frame buffer_rx,buffer_tx;
+_uart_frame buffer_rx, buffer_tx;
 
-_uart_frame	uart1_frame;
+_uart_frame uart1_frame;
 _system_flag system_flag;
 
 char buffer_PLC[MAX_BUFFER];
@@ -48,11 +48,12 @@ __attribute ((aligned(32))) char my_bl_data[256];
 
 unsigned int total_times;
 char buff_rssi[5];
+unsigned char indexEEprom = 1;
 //-------------------------------------------------------------------------------------------------
 //_freeze_data free_data;
-char freeze_code[] =
-		"A08E10901190129013901490109180A011B612B613B621B622B623B630B631B632B633B640B641B642B643B650B651B652B653B610A060B60F302090209110B011A011B012A012B013A013B014A014B000C0";
-
+//char freeze_code[] =
+//"A08E10901190129013901490109180A011B612B613B621B622B623B630B631B632B633B640B641B642B643B650B651B652B653B610A060B60F302090209110B011A011B012A012B013A013B014A014B000C0";
+char freeze_code[] ="A08E10901190129013901490109180A011B621B631B641B650B610A060B60F30209110B011A011B012A012B013A013B014A014B000C0";
 uint16_t table_control_code[LEN_BUFF_FREEZE][4] = { { 0x1090, 0x9010, 0, 8 }, {
 		0x1190, 0x9011, 0, 8 }, { 0x1290, 0x9012, 0, 8 },
 		{ 0x1390, 0x9013, 0, 8 }, { 0x1490, 0x9014, 0, 8 }, { 0x1091, 0x9030, 0,
@@ -159,7 +160,7 @@ uint16_t table_control_code[LEN_BUFF_FREEZE][4] = { { 0x1090, 0x9010, 0, 8 }, {
 				104 }, { 0x13D3, 0xD313, 0, 8 }, { 0x60B6, 0x203E, 0, 8 }, {
 				0x10B0, 0x3000, 4, 8 }, { 0x11B0, 0x3001, 4, 8 }, { 0x12B0,
 				0x3002, 4, 8 }, { 0x13B0, 0x3003, 4, 8 },
-		{ 0x14B0, 0x3004, 4, 8 }, { 0x0E30, 0x300E, 2, 104 }, { 0xC000, 0xC000,
+		{ 0x14B0, 0x3004, 4, 8 }, { 0x0E30, 0x300E, 2, 104 }, { 0x00C0, 0xC000,
 				2, 2 }, { 0x08E1, 0xE108, 0, 2 }, { 0x09E1, 0xE109, 0, 2 },
 
 };

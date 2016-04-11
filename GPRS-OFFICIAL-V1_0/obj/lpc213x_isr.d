@@ -19,9 +19,11 @@
 .\obj\lpc213x_isr.o: source\uart0.h
 .\obj\lpc213x_isr.o: source\uart1.h
 .\obj\lpc213x_isr.o: source\gprs_com.h
+.\obj\lpc213x_isr.o: source\main.h
 .\obj\lpc213x_isr.o: source\delay.h
 .\obj\lpc213x_isr.o: source\wdt.h
 .\obj\lpc213x_isr.o: source\rtc.h
 .\obj\lpc213x_isr.o: source\iap.h
+.\obj\lpc213x_isr.o: source\spi.h
+.\obj\lpc213x_isr.o: source\m25lc512.h
 .\obj\lpc213x_isr.o: source\save_flash.h
-.\obj\lpc213x_isr.o: source\main.h

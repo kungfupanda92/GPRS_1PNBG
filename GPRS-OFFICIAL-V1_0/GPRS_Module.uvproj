@@ -427,6 +427,11 @@
               <FileType>1</FileType>
               <FilePath>.\source\variable.c</FilePath>
             </File>
+            <File>
+              <FileName>m25lc512.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\source\m25lc512.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -481,6 +486,11 @@
               <FileName>wdt.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\source\wdt.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\source\spi.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -20,8 +20,10 @@
 .\obj\iap.o: source\uart0.h
 .\obj\iap.o: source\uart1.h
 .\obj\iap.o: source\gprs_com.h
+.\obj\iap.o: source\main.h
 .\obj\iap.o: source\delay.h
 .\obj\iap.o: source\wdt.h
 .\obj\iap.o: source\rtc.h
+.\obj\iap.o: source\spi.h
+.\obj\iap.o: source\m25lc512.h
 .\obj\iap.o: source\save_flash.h
-.\obj\iap.o: source\main.h

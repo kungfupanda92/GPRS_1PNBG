@@ -10,7 +10,7 @@ extern char freeze_code[];
 extern char buf_send_server[];
 extern char buff_frame_300F[];
 extern __attribute ((aligned(32))) char my_bl_data[256];
-
+extern unsigned char indexEEprom;
 extern unsigned int total_times;
 uint32_t day_sector[] = { 0x00001000, 0x00002800, 0x00004000, 0x00005800 };
 /* P R I V A T E   F U N C T I O N   P R O T O T Y P E S */
@@ -40,7 +40,12 @@ void check_freeze_data(void) {
 			printf("half_hour=%u\r",half_hour);
 			printf("ALMIN=%u\r",ALMIN);
 #endif
+
+#ifdef EXTERNAL_EEPROM
+	eepromSaveFrame();
+#else
 	freeze_frame();
+#endif
 }
 //----------------------------------------------------------------------------------------------
 uint32_t check_sector_current(void) {
@@ -280,7 +285,7 @@ uint8_t read_freeze_frame(_RTC_time Time_server, char *return_buff) {
 		sprintf(string_data, "%02u", buffer_frezze[i]);
 		strcat(return_buff, string_data);
 	}
-	for (i = 5; i < 155; i++) {
+	for (i = 5; i < LENGTH_DATA; i++) {
 		sprintf(string_data, "%02X", buffer_frezze[i]);
 		strcat(return_buff, string_data);
 	}
@@ -440,4 +445,101 @@ uint32_t errase_day_old(void) {
 			return 0x1000;
 		}
 	}
+}
+
+/******************************************************************************/
+/* 				S A V E   D A T A   E E P R O M 				*/
+/******************************************************************************/
+
+/******************************************************************************/
+/*            eepromSaveFrame                                               */
+/******************************************************************************/
+/**
+ * @brief
+ * @param  None
+ * @retval None
+ */
+void eepromSaveFrame(void) {
+	uint32_t add, numPage, modPage, index, i;
+
+	prepare_freeze_frame();
+
+	add = indexEEprom * LENGTH_BUFF_SAVE;
+	my_bl_data[0] = 0;
+	my_bl_data[1] = 0;
+	my_bl_data[2] = 5;
+	my_bl_data[3] = 6;
+	my_bl_data[4] = 16;
+	for (i = 6; i < LENGTH_DATA; i++) {
+		my_bl_data[i] = i;
+	}
+	writeEEPROM(add, my_bl_data, LENGTH_DATA);
+
+}
+/******************************************************************************/
+/*            readFreezeFrame                                               */
+/******************************************************************************/
+/**
+ * @brief
+ * @param  None
+ * @retval None
+ */
+uint8_t readFreezeFrame(_RTC_time Time_server, char *return_buff) {
+	char string_data[4];
+	uint32_t current_add, i;
+	uint8_t * ptr_add;
+
+	current_add = checkHaveDataFreeze(Time_server);
+	if (current_add == 0)
+		return 0;
+
+//	ptr_add = (unsigned char*) current_add;
+//	if (*(ptr_add + 5) != 0xC3) { //dam bao co data
+//		return 0;
+//	}
+	if (readEEPROM(current_add, buffer_frezze, LENGTH_DATA) != M25LC_OK) {
+		return 0;
+	}
+//	for (i = 0; i < LENGTH_DATA; i++) {
+//		printf("%02X", buffer_frezze[i]);
+//	}
+
+	for (i = 0; i < 5; i++) {
+		sprintf(string_data, "%02u", buffer_frezze[i]);
+		strcat(return_buff, string_data);
+	}
+	for (i = 5; i < LENGTH_DATA; i++) {
+		sprintf(string_data, "%02X", buffer_frezze[i]);
+		strcat(return_buff, string_data);
+	}
+	return 1;
+}
+/******************************************************************************/
+/*            checkHaveDataFreeze                                               */
+/******************************************************************************/
+/**
+ * @brief
+ * @param  time
+ * @retval Address have data in eeprom
+ */
+uint32_t checkHaveDataFreeze(_RTC_time day_current) {
+	unsigned char tempBuff[5], i;
+	uint32_t index, add;
+	index = 0;
+	for (index = 1; index <= 96; index++) {
+		add = index * LENGTH_BUFF_SAVE;
+		if (readEEPROM(add, tempBuff, 5) == M25LC_OK) {
+
+			if (tempBuff[1] == day_current.hour) {
+				if (tempBuff[0] == day_current.minute) {
+					if (tempBuff[2] == day_current.day_of_month
+							&& tempBuff[3] == day_current.month
+							&& tempBuff[4] == day_current.year) {
+						return add;
+					}
+				}
+			}
+		}
+	}
+	return 0;
 }

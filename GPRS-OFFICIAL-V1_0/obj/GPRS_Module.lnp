@@ -6,6 +6,7 @@
 ".\obj\save_flash.o"
 ".\obj\stringconvert.o"
 ".\obj\variable.o"
+".\obj\m25lc512.o"
 ".\obj\delay.o"
 ".\obj\gpio.o"
 ".\obj\iap.o"
@@ -16,6 +17,7 @@
 ".\obj\uart0.o"
 ".\obj\uart1.o"
 ".\obj\wdt.o"
+".\obj\spi.o"
 ".\obj\startup.o"
 --strict --scatter ".\obj\GPRS_Module.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols

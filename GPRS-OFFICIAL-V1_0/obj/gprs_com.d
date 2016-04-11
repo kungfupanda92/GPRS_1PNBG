@@ -5,6 +5,7 @@
 .\obj\gprs_com.o: C:\Keil\ARM\ARMCC\bin\..\include\stdint.h
 .\obj\gprs_com.o: C:\Keil\ARM\ARMCC\bin\..\include\stdbool.h
 .\obj\gprs_com.o: C:\Keil\ARM\ARMCC\bin\..\include\string.h
+.\obj\gprs_com.o: source\main.h
 .\obj\gprs_com.o: source\init_system.h
 .\obj\gprs_com.o: source\gpio.h
 .\obj\gprs_com.o: source\uart0.h
@@ -18,5 +19,12 @@
 .\obj\gprs_com.o: source\timer.h
 .\obj\gprs_com.o: source\uart0.h
 .\obj\gprs_com.o: source\uart1.h
+.\obj\gprs_com.o: source\gprs_com.h
 .\obj\gprs_com.o: source\delay.h
 .\obj\gprs_com.o: source\wdt.h
+.\obj\gprs_com.o: source\rtc.h
+.\obj\gprs_com.o: source\iap.h
+.\obj\gprs_com.o: source\spi.h
+.\obj\gprs_com.o: source\main.h
+.\obj\gprs_com.o: source\m25lc512.h
+.\obj\gprs_com.o: source\save_flash.h

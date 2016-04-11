@@ -19,8 +19,11 @@
 .\obj\read_para.o: source\gpio.h
 .\obj\read_para.o: source\uart1.h
 .\obj\read_para.o: source\gprs_com.h
+.\obj\read_para.o: source\main.h
 .\obj\read_para.o: source\delay.h
 .\obj\read_para.o: source\wdt.h
 .\obj\read_para.o: source\rtc.h
 .\obj\read_para.o: source\iap.h
+.\obj\read_para.o: source\spi.h
+.\obj\read_para.o: source\m25lc512.h
 .\obj\read_para.o: source\save_flash.h

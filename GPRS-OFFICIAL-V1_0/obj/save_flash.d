@@ -20,8 +20,11 @@
 .\obj\save_flash.o: source\uart0.h
 .\obj\save_flash.o: source\uart1.h
 .\obj\save_flash.o: source\gprs_com.h
+.\obj\save_flash.o: source\main.h
 .\obj\save_flash.o: source\delay.h
 .\obj\save_flash.o: source\wdt.h
 .\obj\save_flash.o: source\rtc.h
 .\obj\save_flash.o: source\iap.h
+.\obj\save_flash.o: source\spi.h
+.\obj\save_flash.o: source\m25lc512.h
 .\obj\save_flash.o: source\save_flash.h

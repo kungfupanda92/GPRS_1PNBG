@@ -3,7 +3,7 @@
 #include "main.h"
 //------------------------------------------------------------------------------
 extern _rtc_flag rtc_flag;
-extern _uart_frame buffer_rx,buffer_tx;
+extern _uart_frame buffer_rx, buffer_tx;
 extern __attribute ((aligned(32))) char my_bl_data[256];
 extern unsigned int total_times;
 extern char buff_rssi[5];
@@ -310,7 +310,7 @@ unsigned char process_server_reading_data_save(char *data_server,
 	buffer_tx.frame.id_meter[5] = buffer_rx.frame.id_meter[1];
 	//set time
 	for (i = 0; i < 5; i++) {
-		buffer_tx.data_frame[i + 17] = buffer_rx.data_frame[i+17];
+		buffer_tx.data_frame[i + 17] = buffer_rx.data_frame[i + 17];
 	}
 	//set ID
 	StringToHex(ID_hex, para_plc._ID);
@@ -328,13 +328,20 @@ unsigned char process_server_reading_data_save(char *data_server,
 	//end time
 
 	buf_send_server[0] = 0;
+#ifdef EXTERNAL_EEPROM
+	if (readFreezeFrame(time_server, buf_send_server) == 0) {	//no data freeze in flash
+		buffer_tx.data_frame[28] = 0x00;
+		//strcat(buf_send_server, "00");
+	}
+#else
 	if (read_freeze_frame(time_server, buf_send_server) == 0) {	//no data freeze in flash
 		buffer_tx.data_frame[28] = 0x00;
 		//strcat(buf_send_server, "00");
 	}
+#endif
 
 	len_data_meter = strlen(buf_send_server);
-	len_data_meter /=2;
+	len_data_meter /= 2;
 	length_data.val = len_data_meter + 18;
 	StringToHex(buffer_tx.data_frame + 29, buf_send_server);
 
@@ -398,7 +405,7 @@ unsigned char process_server_syntime_module(char *data_server,
 	process_syntime(buf_send_server);
 
 	len_data_meter = strlen(buf_send_server);
-	len_data_meter /=2;
+	len_data_meter /= 2;
 	length_data.val = len_data_meter + 6;
 	StringToHex(buffer_tx.data_frame + 17, buf_send_server);
 
@@ -429,7 +436,7 @@ void process_commands(char *data) {
 	_index = 0;
 	do {
 		strncpy(code_str, commands + _index, 4);
-		code_str[4]=0;
+		code_str[4] = 0;
 		strncat(buf_send_server, code_str, 4);
 		if (strstr(code_str, "3080")) {	//read time module
 			//prepare time
@@ -502,12 +509,12 @@ unsigned char process_server_readtime_module(char *data_server,
 		sprintf(string_data, "%02X", buffer_rx.data_frame[i + 19]);
 		strcat(commands, string_data);
 	}
-	slog("comand",commands);
+	slog("comand", commands);
 	buf_send_server[0] = 0;
 	process_commands(buf_send_server);
-	slog("buf_send_server",buf_send_server);
+	slog("buf_send_server", buf_send_server);
 	len_data_meter = strlen(buf_send_server);
-	len_data_meter /=2;
+	len_data_meter /= 2;
 	length_data.val = len_data_meter + 8;
 	StringToHex(buffer_tx.data_frame + 19, buf_send_server);
 
@@ -576,7 +583,7 @@ flag_system process_server_write_mode(char *data_server, uint16_t *len_buff) {
 	write_data_metter(buf_send_server, len);
 	/*---------Save data to frame tx ---------*/
 	len_data_meter = strlen(buf_send_server);
-	len_data_meter /=2;
+	len_data_meter /= 2;
 	length_data.val = len_data_meter + 6;
 	StringToHex(buffer_tx.data_frame + 17, buf_send_server);
 
@@ -624,8 +631,8 @@ flag_system process_server_reading_direct(char *data_server,
 //
 
 	len = length_data.val - 33;
-	printf("len=%u",len);
-	printf("code=%0.4X",buffer_rx.frame.data[0]);
+	printf("len=%u", len);
+	printf("code=%0.4X", buffer_rx.frame.data[0]);
 	/*---------------------------Protocol mode C--------------------------------*/
 	/*---------Sign in meter----------*/
 	flag_sign_in = sign_in();
@@ -637,9 +644,9 @@ flag_system process_server_reading_direct(char *data_server,
 	/*---------Save data to frame tx ---------*/
 
 	len_data_meter = strlen(buf_send_server);
-	len_data_meter /=2;
-	printf("len=%u",len_data_meter);
-	printf("buf=%s",buf_send_server);
+	len_data_meter /= 2;
+	printf("len=%u", len_data_meter);
+	printf("buf=%s", buf_send_server);
 	length_data.val = len_data_meter + 6;
 	StringToHex(buffer_tx.data_frame + 17, buf_send_server);
 
@@ -889,16 +896,16 @@ void read_metter_directmode(char *frame_tx, unsigned int len_command) {
 	unsigned int len;
 	char tem[10];
 	unsigned int i;
-	WORD_UNSIGNED usxCodeServer,usxTempCode;
+	WORD_UNSIGNED usxCodeServer, usxTempCode;
 //---------------------------------------------------------------------
 	len = len_command / 2;
 	i = 0;
 	for (i = 0; i < len; i++) {
-		usxTempCode.val=buffer_rx.frame.data[i];
-		usxCodeServer.byte.byte0=usxTempCode.byte.byte1;
-		usxCodeServer.byte.byte1=usxTempCode.byte.byte0;
+		usxTempCode.val = buffer_rx.frame.data[i];
+		usxCodeServer.byte.byte0 = usxTempCode.byte.byte1;
+		usxCodeServer.byte.byte1 = usxTempCode.byte.byte0;
 		read_data_meter(frame_tx, usxCodeServer.val, 0, 0);
-		printf("code=%0.4X",usxCodeServer.val);
+		printf("code=%0.4X", usxCodeServer.val);
 	}
 //send break command
 	sprintf(tem, "%cB0%c%c", SOH, ETX, 0x71);

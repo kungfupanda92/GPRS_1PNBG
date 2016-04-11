@@ -6,5 +6,6 @@ void StringToHex(char* hexstring, char* string);
 unsigned char check_buffer(char* data, char* buffer);
 unsigned char bcd2hex(unsigned char bcd);
 unsigned char convert_1byte_string2hex (char data_in);
+void swap_byte(unsigned char *pcByteA, unsigned char *pcByteB);
 
 #endif	/*  */

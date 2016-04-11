@@ -19,9 +19,11 @@
 .\obj\main.o: source\uart0.h
 .\obj\main.o: source\uart1.h
 .\obj\main.o: source\gprs_com.h
+.\obj\main.o: source\main.h
 .\obj\main.o: source\delay.h
 .\obj\main.o: source\wdt.h
 .\obj\main.o: source\rtc.h
 .\obj\main.o: source\iap.h
+.\obj\main.o: source\spi.h
+.\obj\main.o: source\m25lc512.h
 .\obj\main.o: source\save_flash.h
-.\obj\main.o: source\main.h

@@ -4,6 +4,12 @@
 #include <stdint.h>
 #include "read_para.h"
 
+
+
+typedef unsigned char U8;
+typedef unsigned int U32;
+
+
 #define LEN_BUFF_FREEZE		248
 #define MAX_BUFFER					1000
 #define MAX_BUFFER_RX				1000

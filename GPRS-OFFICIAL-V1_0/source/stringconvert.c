@@ -3,10 +3,9 @@
 #include <stdio.h>						/* printf */
 #include <stdint.h>
 
-
-unsigned char bcd2hex(unsigned char bcd){
+unsigned char bcd2hex(unsigned char bcd) {
 	unsigned char decimal;
-	decimal= (bcd & 0xF) + (((unsigned char)bcd & 0xF0) >> 4)*10;
+	decimal = (bcd & 0xF) + (((unsigned char) bcd & 0xF0) >> 4) * 10;
 	return decimal;
 }
 //-------------------------------------------------------------------------------------------------
@@ -22,7 +21,6 @@ void StringToHex(char* hexstring, char* string) {
 			//so
 			hexstring[j] = (ch - 55) << 4;
 		}
-
 
 		ch = string[i + 1];
 		if (ch >= 30 && ch <= 0x39) {
@@ -60,7 +58,7 @@ unsigned char convert_string2hex(char *data_in) {
 }
 //--------------------------------------------------------------------------------------
 unsigned char check_buffer(char* data, char* buffer) {
-	uint32_t i, ptr_start=0, ptr_stop=0, len;
+	uint32_t i, ptr_start = 0, ptr_stop = 0, len;
 	len = strlen(buffer);
 	for (i = 0; i < len; i++) {
 		if (buffer[i] == '(')
@@ -73,7 +71,7 @@ unsigned char check_buffer(char* data, char* buffer) {
 			;
 		}
 	}
-	if(ptr_stop<=ptr_start)
+	if (ptr_stop <= ptr_start)
 		return 0;
 
 	strncpy(data, buffer + ptr_start + 1, ptr_stop - ptr_start - 1);
@@ -81,11 +79,25 @@ unsigned char check_buffer(char* data, char* buffer) {
 	return 1;
 }
 //-----------------------------------------------------------------------------------------
-unsigned char convert_1byte_string2hex (char data_in){
+unsigned char convert_1byte_string2hex(char data_in) {
 	if (data_in <= 0x39)
 		return (data_in - 0x30);
 	else
 		return (data_in - 0x37);
 }
 //-----------------------------------------------------------------------------------------
+/******************************************************************************/
+/*            swap_byte                        */
+/******************************************************************************/
+/**
+ * @brief  swap byte from 2 bytes in ram
+ * @param  None
+ * @retval None
+ */
+void swap_byte(unsigned char *pcByteA, unsigned char *pcByteB) {
+	unsigned char ucByteTemp;
+	ucByteTemp = *pcByteA;
+	*pcByteA = *pcByteB;
+	*pcByteB = ucByteTemp;
+}
 
