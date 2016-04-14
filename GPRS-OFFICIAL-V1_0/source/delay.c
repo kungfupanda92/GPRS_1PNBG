@@ -8,8 +8,9 @@ void delay_n50ms(unsigned int n) {
 		return;
 	//--------
 	program_counter.timer_delay = 0;
-	clear_watchdog();	//clear wdt while wait delay
-	while (program_counter.timer_delay < n);	//wait for delay
+	//clear_watchdog();	//clear wdt while wait delay
+	while (program_counter.timer_delay < n)
+		;	//wait for delay
 }
 //------------------------------------------------------------------------------
 void delay_nsecond(unsigned char nsencond) {
@@ -17,14 +18,16 @@ void delay_nsecond(unsigned char nsencond) {
 
 	i = nsencond * 20;
 	program_counter.timer_delay = 0;
-	clear_watchdog();	//clear wdt while wait delay
-	while (program_counter.timer_delay < i);	//wait for delay
+	//clear_watchdog();	//clear wdt while wait delay
+	while (program_counter.timer_delay < i)
+		;	//wait for delay
 
 }
 //*******************************************************************************
-void delay_ns(unsigned int ns){
+void delay_ns(unsigned int ns) {
 	unsigned int i;
-	for(i=0;i<ns;i++);
+	for (i = 0; i < ns; i++)
+		;
 }
 //*******************************************************************************
 

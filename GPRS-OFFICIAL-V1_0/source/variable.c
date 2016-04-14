@@ -9,6 +9,8 @@ char idle_buf_position, idle_buf_counter;
 _uart1_rx_frame uart1_rx;
 _uart_frame buffer_rx, buffer_tx;
 
+__stateModule stateModule;
+unsigned int lenght_buff_tx;
 _uart_frame uart1_frame;
 _system_flag system_flag;
 

@@ -4,11 +4,8 @@
 #include <stdint.h>
 #include "read_para.h"
 
-
-
 typedef unsigned char U8;
 typedef unsigned int U32;
-
 
 #define LEN_BUFF_FREEZE		248
 #define MAX_BUFFER					1000
@@ -28,6 +25,20 @@ typedef enum {
 	using_vinaphone,
 	using_viettel
 } _flag_mobile_network;
+typedef enum {
+	INIT_GPRS = 0,
+	CONNECTING_SERVER,
+	LOGIN,
+	HOLD_SOCKET,
+	READY_CONNECT,
+	PROCESS_DATA_SERVER,
+	UPDATE_DATA_SERVER,
+	LOST_CONNECT,
+	READ_PARA_CONFIG,
+	ON_GPRS,
+	OFF_GPRS,
+	STATE_MODULE
+} __stateModule;
 //=============================================================================
 typedef union {
 	int16_t val;

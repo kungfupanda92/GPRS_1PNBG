@@ -75,7 +75,7 @@ static U8 m25lc512SendByte(U8 byte) {
 }
 
 static m25lc_e m25lc512CheckWriteInProgress(void) {
-	U8 status, k;
+	U8 status;
 
 	m25lc512StatusRead(&status);
 	delay_ns(10000);
@@ -90,7 +90,7 @@ static m25lc_e m25lc512CheckWriteInProgress(void) {
 static m25lc_e m25lc512WaitNotWriting(void) {
 
 	if (m25lc512CheckWriteInProgress() == M25LC_WIP) {
-		int i, j;
+		int i;
 		for (i = 0; i < 10; i++) {
 			//vTaskDelay (10 / portTICK_RATE_MS);
 //			for (j = 0; j < 55298; j++)
@@ -396,7 +396,7 @@ m25lc_e m25lc512FillAddress(U32 address, U32 length, U8 fillValue) {
 }
 
 U8 writeEEPROM(U32 address, U8 *buffer, U32 bufferLength) {
-	uint32_t uiTmp, i, j;
+	uint32_t uiTmp, i;
 	U8 Buf[PAGESIZE_EEPROM];
 
 	while (bufferLength > 0) {
@@ -428,7 +428,7 @@ U8 writeEEPROM(U32 address, U8 *buffer, U32 bufferLength) {
 	return 0;
 }
 U8 readEEPROM(U32 address, U8 *buffer, U32 bufferLength) {
-	uint32_t uiTmp, i, j;
+	uint32_t uiTmp, i;
 	U8 Buf[PAGESIZE_EEPROM];
 
 	while (bufferLength > 0) {
@@ -472,12 +472,13 @@ void DF_ReadID(U8 *buf) {
 }
 
 void test_fram(void) {
-	unsigned char output_buffer[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+	//unsigned char output_buffer[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
 	_RTC_time day;
-	U8 ucReadData[8], id;
-	U32 add = 0, buff = 1;
-	U8 data = 100, __buff, i;
-	m25lc_e r;
+	//U8 ucReadData[8], id;
+	//U32 add = 0, buff = 1;
+	//U8 data = 100, __buff, i;
+	U8 i;
+	//m25lc_e r;
 
 	IODIR0 |= (1 << 7);
 	IODIR1 |= (1 << 24) | (1 << 25);

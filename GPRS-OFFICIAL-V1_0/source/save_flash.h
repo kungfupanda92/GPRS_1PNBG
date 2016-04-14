@@ -22,7 +22,9 @@ uint8_t check_id(void);
 
 void save_time_offline(char* time_off);
 
-void read_time_offline(char * return_buff, unsigned char mode) ;
+void vSaveTimeLostConnect(void);
+
+void read_time_offline(char * return_buff, unsigned char mode);
 
 uint32_t errase_day_old(void);
 
@@ -36,6 +38,5 @@ uint8_t check_day_ok(unsigned long add_day);
 void eepromSaveFrame(void);
 uint8_t readFreezeFrame(_RTC_time Time_server, char *return_buff);
 uint32_t checkHaveDataFreeze(_RTC_time day_current);
-
 
 #endif /*SAVE_FLASH_H_*/

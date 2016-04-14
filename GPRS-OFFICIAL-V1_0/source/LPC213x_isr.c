@@ -9,7 +9,7 @@ extern _system_flag system_flag;
 extern _uart1_rx_frame uart1_rx;
 
 extern _uart_frame uart1_frame;
-extern _uart_frame buffer_rx,buffer_tx;
+extern _uart_frame buffer_rx, buffer_tx;
 
 extern unsigned char buffer_PLC[];
 extern unsigned char check_frame;
@@ -172,19 +172,20 @@ __irq void myUart1_ISR(void) {
 		}
 		//-------------------------------------------------------------------
 		switch (uart1_rx.para_rx.state_uart) {
-			
+
 		case UART_WAIT_RESPONDE:
 			if (regVal == 0x20) { //0x20: '>'
 				uart1_rx.para_rx.flag.bits.PREPARE_SEND_OK = 1;
 			}
-			uart1_rx.buffer_rx.buf_response_command[uart1_rx.para_rx.counter_rx] =
-					regVal; //contain data to buffer
-			uart1_rx.para_rx.counter_rx++; //increase counter
-			if (uart1_rx.para_rx.counter_rx >= 70) {
-				uart1_rx.para_rx.counter_rx = 70;
+			if (regVal != 0 && regVal != 0x0D && regVal != 0x0A) {
+				uart1_rx.buffer_rx.buf_response_command[uart1_rx.para_rx.counter_rx_command] =
+						regVal; //contain data to buffer
+				uart1_rx.para_rx.counter_rx_command++; //increase counter
 			}
-			break;
-			
+
+			if (uart1_rx.para_rx.counter_rx_command >= 70) {
+				uart1_rx.para_rx.counter_rx_command = 70;
+			}
 		default:
 			break;
 		}
@@ -193,7 +194,8 @@ __irq void myUart1_ISR(void) {
 }
 //-----------------------------------------------------------------------------------------------------
 void DefaultVICHandler(void)
-__irq {
+__irq
+{
 	VICVectAddr = 0; /* Acknowledge Interrupt */
 }
 

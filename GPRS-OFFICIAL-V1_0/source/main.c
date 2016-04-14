@@ -6,15 +6,76 @@ extern _system_flag system_flag;
 extern PARA_PLC para_plc;
 extern CONFIG_NEWWORK config_network;
 extern _uart1_rx_frame uart1_rx;
-
+extern __stateModule stateModule;
 extern _uart_frame uart1_frame;
-extern _uart_frame buffer_rx,buffer_tx;
+extern _uart_frame buffer_rx, buffer_tx;
 //*****-----*****-----
 int main(void) {
-	int temp_var;
-	char time_current[11];
-	unsigned char counter_reset_gprs;
-	//*****-----*****-----*****-----*****-----
+	/*config module hardware*/
+	vSetupHardware();
+	printf("hello baby\r");
+	check_id();
+	while (1) {
+		//task1 communicate with server
+		switch (stateModule) {
+		case STATE_MODULE:
+			checkPowerOnOffGPRS();
+			break;
+		case OFF_GPRS:
+			offModuleGprs();
+			break;
+		case ON_GPRS:
+			onOffModuleGprs();
+			break;
+		case READ_PARA_CONFIG:
+			read_para();	//load para from metter: ID, IP, PORT, APN
+			stateModule = INIT_GPRS;
+			break;
+		case INIT_GPRS:
+			establishTCPClient();
+			stateModule = CONNECTING_SERVER;
+			break;
+		case CONNECTING_SERVER:
+			connectToServerNow();
+			break;
+		case LOGIN:
+			send_command_to_server(COMMAND_LOGIN);
+			stateModule = UPDATE_DATA_SERVER;
+			break;
+		case HOLD_SOCKET:
+			send_command_to_server(COMMAND_SOCKET);
+			stateModule = UPDATE_DATA_SERVER;
+		case READY_CONNECT:
+			if (uart1_rx.para_rx.state_buf_rx == BUF_RX_FULL) {
+				uart1_rx.para_rx.state_buf_rx = BUF_RX_EMPTY;
+				stateModule = PROCESS_DATA_SERVER;
+			} else if (system_flag.bits.SEND_SOCKET) {
+				system_flag.bits.SEND_SOCKET = 0;	//clear flag
+				stateModule = HOLD_SOCKET;
+			}
+
+			break;
+		case PROCESS_DATA_SERVER:
+			get_command_from_server(buffer_rx.data_frame);
+			break;
+		case UPDATE_DATA_SERVER:
+			trans_data_server(0);
+			break;
+		case LOST_CONNECT:
+			vSaveTimeLostConnect();
+
+			stateModule = CONNECTING_SERVER;
+			break;
+		default:
+			break;
+		}
+
+		//Task2 Freeze data metter every interval
+		check_freeze_data();
+
+	}
+}
+void vSetupHardware(void) {
 	init_VIC();
 	init_PLL(); 		//Initialize CPU and Peripheral Clocks @ 60Mhz
 	initTimer0(); 		//Initialize Timer0
@@ -32,125 +93,38 @@ int main(void) {
 	m25lc512_ON();
 	spiInit();
 #endif
-	
+
 //	//test_fram();
-//	while(1);
+
 	//init_Watchdog();	//Init & Start WDT - TimeOut ~= 310 Second
-	//--------------------------------
 	var_start();
-	//--------------------------------
-	printf("hello Tai Cho Dien\r");
-	if (ON_OFF_mudule_GPRS()) {
-		printf("Welcome module SIM800C\r");
-	}
-	read_para();		//load para from metter: ID, IP, PORT, APN
-	prepare_config_mudule();
-	//clear_watchdog();
-	//check_id();
-	clear_watchdog();
-	//enable_ext_wdt();
-	//---------------------
 	RTC_init();
 	set_time_from_rtc();
 	RTC_start();
 	//---------------------
-	printf("hello baby\r");
-	rtc_flag.bits.have_time_300F = 1;
-	/*
-	 while (1) {
-	 send_data_to_server();
-	 if (uart1_rx.para_rx.state_buf_rx == BUF_RX_FULL) {
-	 get_command_from_server(uart1_rx.buffer_rx.buf_rx_server);
-	 //printf("string data rx: %s\r", uart1_rx.buffer_rx.buf_rx_server);
-	 uart1_rx.para_rx.state_buf_rx = BUF_RX_EMPTY;
-	 }
-	 }
-	 */
-	while (1) {
-		temp_var = 0;
-		counter_reset_gprs = 0;			//clear counter in the main loop
-		//----------------Check & Save the Offline time ------------------------------------
-		if (system_flag.bits.SEND_ERROR) {
-			sprintf(time_current, "%02u%02u%02u%02u%02u",
-					(uint8_t) (YEAR - 2000), MONTH, DOM, HOUR, MIN);
-			save_time_offline(time_current);
-		}
-		//----------------------------------------------------------------------------------
-		/*----Process when can not send data to server--------------------------------------
-		 ----------------------------------------------------------------------------------*/
-		while (system_flag.bits.SEND_ERROR || system_flag.bits.RESET_CONFIG) {
-			if (system_flag.bits.RESET_CONFIG)
-				system_flag.bits.RESET_CONFIG = 0;
-			read_para();	//load para from metter: ID, IP, PORT, APN
-			clear_watchdog();
-			prepare_config_mudule();
-			clear_watchdog();
-			check_freeze_data();
-			if (system_flag.bits.CONNECT_OK) {
-				send_command_to_server(COMMAND_LOGIN);
-				//delay_nsecond(3);		//wait 3s after send command login
-			} else {
-				delay_nsecond(5);		//delay 5s
-				temp_var++;
-			}
-			//*****-----
-			if ((system_flag.bits.SEND_ERROR) && (temp_var >= 2)) {
-				//Need reset Module GPRS
-				temp_var = 0;
-				ON_OFF_mudule_GPRS();
-				clear_watchdog();
-				check_freeze_data();
-				//------------------------------------
-				counter_reset_gprs++;//increase counter after reset module gprs
-				//------------------------------------
-				if (counter_reset_gprs == 3) { 	//module gprs was reset 3 time
-					system_flag.bits.IP_CONNECT = 1;	//Switch to connect IP2
-				} else if (counter_reset_gprs == 4) {
-					system_flag.bits.IP_CONNECT = 0;	//Switch to connect IP1
-				} else
-					system_flag.bits.IP_CONNECT = 0;//Switch to connect IP1 - default
-				//------------------------------------
-				if (counter_reset_gprs >= 5)
-					counter_reset_gprs = 0;				//reset counter
-				//------------------------------------
-				check_freeze_data();
-			}
-		}
-		/*--------------------------------------------------------------------------------
-		 ---------------------------------------------------------------------------------*/
-		send_data_to_server();
-		//clear_watchdog();
-		if (uart1_rx.para_rx.state_buf_rx == BUF_RX_FULL) {
-			get_command_from_server(buffer_rx.data_frame);
-			//printf("string data rx: %s\r", uart1_rx.buffer_rx.buf_rx_server);
-			uart1_rx.para_rx.state_buf_rx = BUF_RX_EMPTY;
-		}
-
-		check_freeze_data();
-		clear_watchdog();
-		get_RSSI_signal();
-	}
 }
 //----------------------------------------------------------------------------------------
 void var_start(void) {
+	stateModule = STATE_MODULE;
 	rtc_flag.data_bits = 0x00;
 	system_flag.data_bits = 0x0000;
 	system_flag.bits.TIMEOUT_WAIT_LOGIN = 1;
 	uart1_rx.para_rx.quick_connect = 0;
 	uart1_rx.para_rx.uart_state = UART_STATE_NOTHING;
+	rtc_flag.bits.have_time_300F = 1;
 }
 //----------------------------------------------------------------------------------------
 void gpio_config(void) {
-	//IO0DIR = 0xFFFFFFFF; //Configure all pins as outputs
+//IO0DIR = 0xFFFFFFFF; //Configure all pins as outputs
 
-	//PINSEL1 &= 0xCFFFFFFF; //select P0.30 is GPIO (dissable EXT_INT3)
-	//GPIO_Input(GPIO_P0, GPIO_PIN_30);				//select pin is INPUT
+//PINSEL1 &= 0xCFFFFFFF; //select P0.30 is GPIO (dissable EXT_INT3)
+//GPIO_Input(GPIO_P0, GPIO_PIN_30);				//select pin is INPUT
 
 	PINSEL1 &= 0xFFFFFFFC; 							//select P0.16 is GPIO
 	GPIO_Output(GPIO_P0, GPIO_PIN_23); //Port Output, used for ON/OFF mudule GPRS
 
-	//GPIO_Output(GPIO_P0, GPIO_PIN_0);				//Port Output, TX0
-	//GPIO_Output(GPIO_P0, GPIO_PIN_8);				//Port Output, TX1
+//GPIO_Output(GPIO_P0, GPIO_PIN_0);				//Port Output, TX0
+//GPIO_Output(GPIO_P0, GPIO_PIN_8);				//Port Output, TX1
 
 	PINSEL0 &= 0xCFFFFFFF; 							//select P0.14 is GPIO
 	GPIO_Output(GPIO_P0, GPIO_PIN_14); //Port Output, --> control Power for MAX705

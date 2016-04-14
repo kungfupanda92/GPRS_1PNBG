@@ -41,7 +41,6 @@
 #define SIM800_RESPONSE_OK              	     	0x02
 #define SIM800_RESPONSE_CORRECT            	     	0x03
 
-
 //define state of uart-------------------------------------------------------------------------------
 #define UART_IDLE              	    			 	0x00
 //#define UART_WAIT_COMMAND_RESPONSE               	0x01
@@ -69,26 +68,30 @@
 #define COMMAND_SYN_TIME_MODULE						0x06
 #define COMMAND_READ_TIME_MODULE					0x01
 //---------------------------------------------------------------------------------------------------
-void convert_array_hex2string(unsigned char *hex_array, char *string, unsigned int length_hex);
+void convert_array_hex2string(unsigned char *hex_array, char *string,
+		unsigned int length_hex);
 void get_RSSI_signal(void);
 bool ON_OFF_mudule_GPRS(void);
+void onOffModuleGprs(void);
+void offModuleGprs(void);
+void checkPowerOnOffGPRS(void);
 void prepare_command_gprs(unsigned char process, char header_rx);
 
-void quick_connect(void);
+void connectToServerNow(void);
 void prepare_trans_data(uint16_t len_frame);
 void prepare_trans_data_test(void);
 
 //unsigned char wait_response_command_gprs (unsigned char second);
 //void check_para (void);
 //void get_time_from_meter(_RTC_time time);
-void prepare_config_mudule(void);
+void establishTCPClient(void);
 void trans_data_server(uint16_t len_frame);
 void trans_data_server_test(void);
 void send_command_to_server(unsigned char command);
 void get_command_from_server(char *data_process);
-flag_system check_data_rx_server (char *data_server);
-void process_data_rx_from_server (char *data_server,unsigned char control_code);
-void send_data_to_server (void);
+flag_system check_data_rx_server(char *data_server);
+void process_data_rx_from_server(char *data_server, unsigned char control_code);
+void send_data_to_server(void);
 void clear_array(char *array, unsigned int length);
 
 #endif	/*  */

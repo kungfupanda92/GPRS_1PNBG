@@ -25,10 +25,8 @@
 #include "save_flash.h"
 //-----------------------------------------------------------------------
 #define SIMCOM_800C
-#define DEBUG
+//#define DEBUG
 //#define EXTERNAL_EEPROM
-
-
 
 #ifdef DEBUG
 #define slog(title,data) printf("\r------------------\r%s::%s\r------------------\r",title,data)
@@ -40,6 +38,7 @@
 
 //#define SIM_HAUWEI
 //-----------------------------------------------------------------------
+void vSetupHardware(void);
 void var_start(void);
 void gpio_config(void);
 void init_VIC(void);

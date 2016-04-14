@@ -330,7 +330,12 @@ uint8_t check_id(void) {
 
 	return 1; //No change ID
 }
-
+void vSaveTimeLostConnect(void) {
+	char time_current[11];
+	sprintf(time_current, "%02u%02u%02u%02u%02u", (uint8_t)(YEAR - 2000), MONTH,
+			DOM, HOUR, MIN);
+	save_time_offline(time_current);
+}
 void save_time_offline(char* time_off) {
 	uint8_t *ptr_add;
 	uint8_t i;
@@ -460,7 +465,7 @@ uint32_t errase_day_old(void) {
  * @retval None
  */
 void eepromSaveFrame(void) {
-	uint32_t add, numPage, modPage, index, i;
+	uint32_t add, modPage, i;
 
 	prepare_freeze_frame();
 
@@ -487,7 +492,6 @@ void eepromSaveFrame(void) {
 uint8_t readFreezeFrame(_RTC_time Time_server, char *return_buff) {
 	char string_data[4];
 	uint32_t current_add, i;
-	uint8_t * ptr_add;
 
 	current_add = checkHaveDataFreeze(Time_server);
 	if (current_add == 0)
@@ -523,7 +527,7 @@ uint8_t readFreezeFrame(_RTC_time Time_server, char *return_buff) {
  * @retval Address have data in eeprom
  */
 uint32_t checkHaveDataFreeze(_RTC_time day_current) {
-	unsigned char tempBuff[5], i;
+	unsigned char tempBuff[5];
 	uint32_t index, add;
 	index = 0;
 	for (index = 1; index <= 96; index++) {

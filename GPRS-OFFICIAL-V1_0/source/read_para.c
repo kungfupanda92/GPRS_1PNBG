@@ -7,6 +7,7 @@ extern _uart_frame buffer_rx, buffer_tx;
 extern __attribute ((aligned(32))) char my_bl_data[256];
 extern unsigned int total_times;
 extern char buff_rssi[5];
+extern unsigned int lenght_buff_tx;
 
 extern char buffer_PLC[MAX_BUFFER];
 extern char commands[COMMANDS];
@@ -329,7 +330,7 @@ unsigned char process_server_reading_data_save(char *data_server,
 
 	buf_send_server[0] = 0;
 #ifdef EXTERNAL_EEPROM
-	if (readFreezeFrame(time_server, buf_send_server) == 0) {	//no data freeze in flash
+	if (readFreezeFrame(time_server, buf_send_server) == 0) {//no data freeze in flash
 		buffer_tx.data_frame[28] = 0x00;
 		//strcat(buf_send_server, "00");
 	}
@@ -359,7 +360,7 @@ unsigned char process_server_reading_data_save(char *data_server,
 
 	/*---------end protocol ------------------*/
 	*len_full_buff_tx = len + 2;
-
+	lenght_buff_tx = len + 2;
 	return data_return;
 }
 //---------------------------------------------------------------------------------------
@@ -423,7 +424,7 @@ unsigned char process_server_syntime_module(char *data_server,
 
 	/*---------end protocol ------------------*/
 	*len_full_buff_tx = len + 2;
-
+	lenght_buff_tx = len + 2;
 	return true;
 }
 //---------------------------------------------------------------------------------------
@@ -477,6 +478,7 @@ void process_commands(char *data) {
 		} else if (strstr(code_str, "0A88")) { //code HW
 			strcat(buf_send_server, "0601"); //version HW GPRS
 		} else if (strstr(code_str, "3180")) { //read RSSI
+			get_RSSI_signal();
 			strncat(buf_send_server, buff_rssi, 2);
 		} else if (strstr(code_str, "3280")) { //read total_offline
 			read_time_offline(buf_send_server, 0);
@@ -509,10 +511,10 @@ unsigned char process_server_readtime_module(char *data_server,
 		sprintf(string_data, "%02X", buffer_rx.data_frame[i + 19]);
 		strcat(commands, string_data);
 	}
-	slog("comand", commands);
+	//slog("comand", commands);
 	buf_send_server[0] = 0;
 	process_commands(buf_send_server);
-	slog("buf_send_server", buf_send_server);
+	//slog("buf_send_server", buf_send_server);
 	len_data_meter = strlen(buf_send_server);
 	len_data_meter /= 2;
 	length_data.val = len_data_meter + 8;
@@ -532,7 +534,7 @@ unsigned char process_server_readtime_module(char *data_server,
 
 	/*---------end protocol ------------------*/
 	*len_full_buff_tx = len + 2;
-
+	lenght_buff_tx = len + 2;
 	return true;
 }
 /******************************************************************************/
@@ -601,6 +603,7 @@ flag_system process_server_write_mode(char *data_server, uint16_t *len_buff) {
 
 	/*---------end protocol ------------------*/
 	*len_buff = len + 2;
+	lenght_buff_tx = len + 2;
 	return process_data_ok;
 
 }
@@ -631,8 +634,8 @@ flag_system process_server_reading_direct(char *data_server,
 //
 
 	len = length_data.val - 33;
-	printf("len=%u", len);
-	printf("code=%0.4X", buffer_rx.frame.data[0]);
+	//printf("len=%u", len);
+	//printf("code=%0.4X", buffer_rx.frame.data[0]);
 	/*---------------------------Protocol mode C--------------------------------*/
 	/*---------Sign in meter----------*/
 	flag_sign_in = sign_in();
@@ -645,8 +648,8 @@ flag_system process_server_reading_direct(char *data_server,
 
 	len_data_meter = strlen(buf_send_server);
 	len_data_meter /= 2;
-	printf("len=%u", len_data_meter);
-	printf("buf=%s", buf_send_server);
+	//printf("len=%u", len_data_meter);
+	//printf("buf=%s", buf_send_server);
 	length_data.val = len_data_meter + 6;
 	StringToHex(buffer_tx.data_frame + 17, buf_send_server);
 
@@ -664,6 +667,7 @@ flag_system process_server_reading_direct(char *data_server,
 
 	/*---------end protocol ------------------*/
 	*len_full_buff_tx = len + 2;
+	lenght_buff_tx = len + 2;
 	return process_data_ok;
 }
 /******************************************************************************/
@@ -905,7 +909,7 @@ void read_metter_directmode(char *frame_tx, unsigned int len_command) {
 		usxCodeServer.byte.byte0 = usxTempCode.byte.byte1;
 		usxCodeServer.byte.byte1 = usxTempCode.byte.byte0;
 		read_data_meter(frame_tx, usxCodeServer.val, 0, 0);
-		printf("code=%0.4X", usxCodeServer.val);
+		//printf("code=%0.4X", usxCodeServer.val);
 	}
 //send break command
 	sprintf(tem, "%cB0%c%c", SOH, ETX, 0x71);
