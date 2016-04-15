@@ -9,7 +9,7 @@ extern _rtc_flag rtc_flag;
 extern char freeze_code[];
 extern char buf_send_server[];
 extern char buff_frame_300F[];
-extern __attribute ((aligned(32))) char my_bl_data[256];
+extern __attribute ((aligned(32))) char my_bl_data[PAGESIZE_FLASH];
 extern unsigned char indexEEprom;
 extern unsigned int total_times;
 uint32_t day_sector[] = { 0x00001000, 0x00002800, 0x00004000, 0x00005800 };
@@ -173,7 +173,7 @@ void prepare_freeze_frame() {
 #ifdef DEBUG_SAVE_FLASH
 	printf("buuf=%s",buf_send_server);
 #endif
-	if (strlen(buf_send_server) >= 480)
+	if (strlen(buf_send_server) >= (PAGESIZE_FLASH * 2) - 12)
 		return;
 
 	my_bl_data[0] = (half_hour) ? 30 : 0;
@@ -199,16 +199,16 @@ uint32_t check_add_free(void) {
 	index = 0;
 	while (index < 0x6000) {
 		if (*(ptr + index) == 0xFF) {
-			if (*(ptr + index + 256) != 0xFF) {
+			if (*(ptr + index + PAGESIZE_FLASH) != 0xFF) {
 				if (index >= 0x5F00) {
 					iap_Erase(0x1000);
 					index = 0;
 				} else
-					iap_Erase(index + 0x1000 + 256);
+					iap_Erase(index + 0x1000 + PAGESIZE_FLASH);
 			}
 			return index + 0x1000;
 		}
-		index += 256;
+		index += PAGESIZE_FLASH;
 	}
 	iap_Erase_sector(1, 6);
 	return 0x1000;
@@ -243,7 +243,7 @@ uint32_t check_add_current(_RTC_time day_current) {
 				}
 			}
 		}
-		index += 256;
+		index += PAGESIZE_FLASH;
 	}
 	return 0;
 }

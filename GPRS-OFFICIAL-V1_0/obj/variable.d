@@ -13,3 +13,16 @@
 .\obj\variable.o: source\uart0.h
 .\obj\variable.o: source\target.h
 .\obj\variable.o: source\LPC213x_isr.h
+.\obj\variable.o: source\main.h
+.\obj\variable.o: source\init_system.h
+.\obj\variable.o: source\gpio.h
+.\obj\variable.o: source\uart1.h
+.\obj\variable.o: source\gprs_com.h
+.\obj\variable.o: source\main.h
+.\obj\variable.o: source\delay.h
+.\obj\variable.o: source\wdt.h
+.\obj\variable.o: source\rtc.h
+.\obj\variable.o: source\iap.h
+.\obj\variable.o: source\spi.h
+.\obj\variable.o: source\m25lc512.h
+.\obj\variable.o: source\save_flash.h

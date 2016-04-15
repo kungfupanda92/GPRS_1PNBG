@@ -2,6 +2,7 @@
 #define SAVE_FLASH_H_
 
 #include "main.h"
+#define PAGESIZE_FLASH 		128
 #define add_INDEX_EEPROM	0
 #define LENGTH_BUFF_SAVE	128
 #define LENGTH_DATA			121

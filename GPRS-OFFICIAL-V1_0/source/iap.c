@@ -57,7 +57,7 @@
 #endif
 
 
-extern __attribute ((aligned(32))) char my_bl_data[256];
+extern __attribute ((aligned(32))) char my_bl_data[PAGESIZE_FLASH];
 static unsigned int iap_command[5];			// contains parameters for IAP command
 static unsigned int iap_result[2];			// contains results
 typedef void (*IAP) (unsigned int[],unsigned int[]);	// typedefinition for IAP entry function

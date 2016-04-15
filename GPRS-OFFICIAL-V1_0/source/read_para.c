@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 extern _rtc_flag rtc_flag;
 extern _uart_frame buffer_rx, buffer_tx;
-extern __attribute ((aligned(32))) char my_bl_data[256];
+extern __attribute ((aligned(32))) char my_bl_data[PAGESIZE_FLASH];
 extern unsigned int total_times;
 extern char buff_rssi[5];
 extern unsigned int lenght_buff_tx;

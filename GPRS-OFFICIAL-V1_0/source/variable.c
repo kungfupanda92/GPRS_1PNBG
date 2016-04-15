@@ -4,6 +4,7 @@
 
 #include "read_para.h"
 #include "system.h"
+#include "main.h"
 
 char idle_buf_position, idle_buf_counter;
 _uart1_rx_frame uart1_rx;
@@ -46,7 +47,7 @@ unsigned int half_hour;
 _RTC_time time_server;
 uint16_t time_auto_read;
 _rtc_flag rtc_flag;
-__attribute ((aligned(32))) char my_bl_data[256];
+__attribute ((aligned(32))) char my_bl_data[PAGESIZE_FLASH];
 
 unsigned int total_times;
 char buff_rssi[5];

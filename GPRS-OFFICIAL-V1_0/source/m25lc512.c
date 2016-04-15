@@ -12,7 +12,7 @@
 #include "spi.h"
 #include "m25lc512.h"
 extern unsigned char indexEEprom;
-extern __attribute ((aligned(32))) char my_bl_data[256];
+extern __attribute ((aligned(32))) char my_bl_data[PAGESIZE_FLASH];
 extern char buffer_frezze[];
 //
 //
